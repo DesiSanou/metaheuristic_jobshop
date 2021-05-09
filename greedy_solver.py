@@ -151,10 +151,10 @@ class GreedySolver(object):
         scheduled_tasks = [[] for _ in range(self.number_of_jobs)]
         remaining_task_per_job = [[] for _ in range(self.number_of_jobs)]
 
-        # initialisation
-        for i in range(self.number_of_jobs):
-            for job in range(self.number_of_tasks):
-                remaining_task_per_job[i].append((i, job))
+        for job in range(self.number_of_jobs):
+            for task in range(self.number_of_tasks):
+                remaining_task_per_job[job].append((job, task))
+
         schedulable_task_exists = True
         while schedulable_task_exists:
 
