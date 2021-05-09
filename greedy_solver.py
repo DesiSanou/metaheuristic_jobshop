@@ -44,7 +44,7 @@ class GreedySolver(object):
             schedulable_task_exists = len(schedulable_tasks) != 0
         return job_list, resource
 
-    def run_lrtp(self):
+    def run_lrpt(self):
         # Initialise schedulable tasks with the first tasks of all jobs
         first_task = 0
         schedulable_tasks = [(job, first_task) for job in range(self.number_of_jobs)]
@@ -107,14 +107,14 @@ class GreedySolver(object):
                 used_machine = self.machines[job, task]
                 if len(resource[used_machine]) > 0:
                     j, t = resource[used_machine][-1]
-                    mac_ready = scheduled_tasks[j][t] + self.durations[j, t]
+                    used_machine_ready = scheduled_tasks[j][t] + self.durations[j, t]
                 if len(resource[used_machine]) == 0:
-                    mac_ready = 0
+                    used_machine_ready = 0
                 if task > 0:
                     prev_task_completed_time = scheduled_tasks[job][task - 1] + self.durations[job, task - 1]
                 elif task == 0:
                     prev_task_completed_time = 0
-                earliest_start_times.append(max(mac_ready, prev_task_completed_time))
+                earliest_start_times.append(max(used_machine_ready, prev_task_completed_time))
 
             est_among_all = min(earliest_start_times)
             eligible_tasks = [task for index, task in enumerate(schedulable_tasks) if earliest_start_times[index] == est_among_all]
@@ -135,6 +135,75 @@ class GreedySolver(object):
             job_list.append(job)
             scheduled_tasks[job].append(est_among_all)  #
             schedulable_tasks.remove(task_to_schedule)
+            if task < self.number_of_tasks - 1:
+                schedulable_tasks.append((job, task + 1))
+            schedulable_task_exists = len(schedulable_tasks) != 0
+        return job_list, resource
+
+    def run_est_lrpt(self):
+        # Initialise schedulable tasks with the first tasks of all jobs
+        first_task = 0
+        schedulable_tasks = [(job, first_task) for job in range(self.number_of_jobs)]
+
+        resource = [[] for _ in range(self.number_of_tasks)]
+        job_list = list()
+
+        scheduled_tasks = [[] for _ in range(self.number_of_jobs)]
+        remaining_task_per_job = [[] for _ in range(self.number_of_jobs)]
+
+        # initialisation
+        for i in range(self.number_of_jobs):
+            for job in range(self.number_of_tasks):
+                remaining_task_per_job[i].append((i, job))
+        schedulable_task_exists = True
+        while schedulable_task_exists:
+
+            earliest_start_times = []
+
+            for (job, task) in schedulable_tasks:
+                used_machine = self.machines[job, task]
+                if len(resource[used_machine]) > 0:
+                    j, t = resource[used_machine][-1]
+                    used_machine_ready = scheduled_tasks[j][t] + self.durations[j, t]
+                if len(resource[used_machine]) == 0:
+                    used_machine_ready = 0
+
+                if task > 0:
+                    prev_task_completed_time = scheduled_tasks[job][task - 1] + self.durations[job, task - 1]
+                if task == 0:
+                    prev_task_completed_time = 0
+
+                earliest_start_times.append(max(used_machine_ready, prev_task_completed_time))
+
+            est_among_all = min(earliest_start_times)
+            eligible_tasks = [task for index, task in enumerate(schedulable_tasks) if earliest_start_times[index] == est_among_all]
+
+            if len(eligible_tasks) == 1:
+                task_to_schedule = eligible_tasks[0]
+
+            if len(eligible_tasks) > 1:
+                eligible_jobs = [job for job, task in eligible_tasks]
+                remaining_processing_times = [0] * self.number_of_jobs
+
+                for i in eligible_jobs:
+                    for job, task in remaining_task_per_job[i]:
+                        remaining_processing_times[i] +=  self.durations[job, task]
+
+                max_j = np.argmax(np.array(remaining_processing_times))
+
+                for job, task in eligible_tasks:
+                    if job == max_j:
+                        task_to_schedule = job, task
+
+            index_of_task_to_schedule = self.machines[task_to_schedule]
+            resource[index_of_task_to_schedule].append(task_to_schedule)
+
+            job, task = task_to_schedule
+            job_list.append(job)
+
+            scheduled_tasks[job].append(est_among_all)
+            schedulable_tasks.remove(task_to_schedule)
+            remaining_task_per_job[job].remove(task_to_schedule)
             if task < self.number_of_tasks - 1:
                 schedulable_tasks.append((job, task + 1))
             schedulable_task_exists = len(schedulable_tasks) != 0
