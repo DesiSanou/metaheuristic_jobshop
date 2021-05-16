@@ -1,15 +1,16 @@
 import numpy as np
 
+from Instance import Instance
+
 
 class GreedySolver(object):
-    def __init__(self, machines, durations, number_of_jobs, number_of_tasks):
-        self.machines = machines
-        self.durations = durations
-        self.number_of_jobs = number_of_jobs
-        self.number_of_tasks = number_of_tasks
+    def __init__(self, instance: Instance):
+        self.machines = instance.machines
+        self.durations = instance.durations
+        self.number_of_jobs = instance.numJobs
+        self.number_of_tasks = instance.numTasks
 
-    def run_stp(self):
-
+    def run_spt(self):
         # Initialise schedulable tasks with the first tasks of all jobs
         first_task = 0
         schedulable_tasks = [(job, first_task) for job in range(self.number_of_jobs)]
@@ -29,7 +30,7 @@ class GreedySolver(object):
 
             # Assign the needed machine to the task
             machine_used_by_task = self.machines[task_to_schedule]
-            resource[machine_used_by_task].append(task_to_schedule)
+            resource[int(machine_used_by_task)].append(task_to_schedule)
 
             # Update job list
             job, task = task_to_schedule
@@ -53,7 +54,7 @@ class GreedySolver(object):
         job_list = list()
 
         scheduled_tasks = []
-        remaining_task_per_job = [[] for _ in range(self.number_of_tasks)]
+        remaining_task_per_job = [[] for _ in range(self.number_of_jobs)]
 
         for job in range(self.number_of_jobs):
             for task in range(self.number_of_tasks):
@@ -75,7 +76,7 @@ class GreedySolver(object):
                 if job == job_with_lrpt:
                     task_to_schedule = job, task
                     index_of_task_to_schedule = self.machines[task_to_schedule]
-                    resource[index_of_task_to_schedule].append(task_to_schedule)
+                    resource[int(index_of_task_to_schedule)].append(task_to_schedule)
                     job, task = task_to_schedule
                     job_list.append(job)
 
@@ -90,7 +91,7 @@ class GreedySolver(object):
 
         return job_list, resource
 
-    def run_est_stp(self):
+    def run_est_spt(self):
         resource = [[] for _ in range(self.number_of_tasks)]
         job_list = []
 
@@ -105,7 +106,7 @@ class GreedySolver(object):
             earliest_start_times = []
             for (job, task) in schedulable_tasks:
                 used_machine = self.machines[job, task]
-                if len(resource[used_machine]) > 0:
+                if len(resource[int(used_machine)]) > 0:
                     j, t = resource[used_machine][-1]
                     used_machine_ready = scheduled_tasks[j][t] + self.durations[j, t]
                 if len(resource[used_machine]) == 0:
@@ -118,13 +119,13 @@ class GreedySolver(object):
 
             est_among_all = min(earliest_start_times)
             eligible_tasks = [task for index, task in enumerate(schedulable_tasks) if earliest_start_times[index] == est_among_all]
-
             if len(eligible_tasks) != 1:
                 processing_times = []
                 for (job, task) in eligible_tasks:
                     processing_time = self.durations[job, task]
                     processing_times.append(processing_time)
                 task_to_schedule = eligible_tasks[np.argmin(np.array(processing_times))]
+                index_of_task_to_schedule = self.machines[task_to_schedule]
 
             elif len(eligible_tasks) == 1:
                 task_to_schedule = eligible_tasks[0]

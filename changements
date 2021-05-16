@@ -1,0 +1,24 @@
+realisable = schedulable_tasks
+n = self.number_of_jobs
+m = self.number_of_tasks
+machines = self.machines
+realisees = scheduled_tasks
+next_t = task_to_schedule
+o : task
+j: job
+durations: self.durations
+restantes = remaining_task_per_job
+k= index_of_task_to_schedule
+durees_restantes : remaining_processing_times
+duree: processing_time
+durees: processing_times
+start: est_among_all
+start_possible: earliest_start_times
+choisies : eligible_tasks
+job_choisis = eligible_jobs
+ressource= resource
+mac_ready = used_machine_ready
+fin_prec : prev_task_completed_time
+mac : used_machine
+jm: j
+om: t
