@@ -9,12 +9,12 @@ from Instance import Instance
 from ResourceOrder import ResourceOrder
 from JobNumbers import JobNumbers
 
-bestKnown = {"la01": 666,
-             "la02": 655,
-             "aaa1": 11,
-             "ft06": 55,
-             "ft10": 930,
-             "ft20": 1165
+bestKnown = { "aaa1": 11,
+              "ft06": 55,
+              "ft10": 930,
+              "ft20": 1165,
+              "la01": 666,
+              "la02": 655,
              }
 
 
@@ -49,6 +49,8 @@ def solve_problem(instances, criteria="spt"):
             job_list, task_by_machines = greedy_solver.run_est_spt()
         elif criteria == "est_lrpt":
             job_list, task_by_machines = greedy_solver.run_est_lrpt()
+        elif criteria == "lpt":
+            job_list, task_by_machines = greedy_solver.run_lpt()
         else:
             logging.error("%s not Implemented", criteria)
             exit()
@@ -73,7 +75,8 @@ if __name__ == '__main__':
     instances = args.instances.split('-')
     instances = bestKnown.keys()
     results = []
-    criterias = ["spt", "lrpt", "est_spt", "est_lrpt"]
+    criterias = ["spt", "lrpt", "est_spt", "est_lrpt", "lpt"]
+
     print("# metaheuristic_jobshop")
     print("<pre>")
     for criteria in criterias:
