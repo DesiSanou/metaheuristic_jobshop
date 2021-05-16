@@ -1,7 +1,6 @@
 # metaheuristic_jobshop
 <pre>
 
-
 Solver: Greedy | Criteria: SPT 
 
 instance    size      best    runtime    makespan    ecart
