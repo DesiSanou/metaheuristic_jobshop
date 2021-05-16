@@ -71,8 +71,11 @@ if __name__ == '__main__':
     parser.add_argument('--instances', default=None, type=str)
     args = parser.parse_args()
     instances = args.instances.split('-')
+    instances = bestKnown.keys()
     results = []
     criterias = ["spt", "lrpt", "est_spt", "est_lrpt"]
+    print("# metaheuristic_jobshop")
+    print("<pre>")
     for criteria in criterias:
         solve_problem(instances, criteria=criteria)
 
@@ -91,6 +94,8 @@ if __name__ == '__main__':
 
             results.append([inst, response[0], response[1], response[2], response[3], response[4]])
         print(tabulate(results, headers=['instance', 'size', 'best', 'runtime', 'makespan', 'ecart']))
+
+        print("</pre>")
 
 
 
