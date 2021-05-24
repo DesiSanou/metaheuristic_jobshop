@@ -17,7 +17,7 @@ def plot_data(xdata, ydata, title, xlabel, ylabel, fig_num):
 
 
 def plot_result(makespans, best_known_value, instance):
-    fig, ax = plt.subplots(figsize=(20,10))
+    fig, ax = plt.subplots(figsize=(10,10))
     N = len(makespans.keys())
     best_known_list = [best_known_value]*N
 
@@ -69,24 +69,3 @@ if __name__ == '__main__':
     global_results = read_json_file("results.json")
     for inst, makespans in global_results.items():
         plot_result(makespans, bestKnown[inst], inst)
-
-    if False:
-         for inst, makespans in global_results.items():
-            title = inst+" results for each criteria"
-            # plt.hist("best", bestKnown[inst])
-            y_data = [value[0] for value in makespans.values()]
-            df = pandas.DataFrame.from_dict(makespans, orient='index')
-            df.index.name = "Makespan "+ inst
-            ax = df.plot(kind='bar')
-            ax.s
-            ax.figure.savefig(inst+"_results.png")
-
-            if False:
-                x_data = [i+1 for i in range(len(makespans.keys()))]
-                plot_data(xdata=makespans.keys(), ydata=y_data, xlabel="solver criteria", ylabel="makespan", title=title, fig_num=FIG_NUM)
-                plt.xticks(x_data, list(makespans.keys()))
-                # plt.plot(x_data, [bestKnown[inst]] * len(x_data))
-                plt.savefig(inst+"_result.png")
-            plt.show()
-            FIG_NUM += 1
-            break
