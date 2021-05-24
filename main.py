@@ -2,7 +2,7 @@ import logging
 import time
 from tabulate import tabulate
 import argparse
-
+import json
 from BasicSolver import BasicSolver
 from solvers.greedy_solver import GreedySolver
 from Instance import Instance
@@ -30,7 +30,9 @@ def format_result(schedule_repr, instance_name, start_time):
 
 def solve_problem(instances, criteria="spt"):
     results = list()
+
     print('\n\nSolver: Greedy | Criteria: %s \n'% criteria.upper())
+
     for inst in instances:
         logging.debug(inst)
         try:
@@ -62,20 +64,35 @@ def solve_problem(instances, criteria="spt"):
         logging.debug("resource_order: %s", str(resource_order))
         schedule_repr = job_numbers.toSchedule()
         response = format_result(schedule_repr, instance_name=inst, start_time=start)
+        global_results[inst][criteria].append(response[3])
         results.append([inst, response[0], response[1], response[2], response[3], response[4]])
     print(tabulate(results, headers=['instance', 'size', 'best', 'runtime', 'makespan', 'ecart']))
 
+
+def save_to_json_file(data, dest_file):
+    with open(dest_file, "w") as a_file:
+        json.dump(data, a_file)
 
 if __name__ == '__main__':
 
     logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
     parser = argparse.ArgumentParser()
-    parser.add_argument('--instances', default=None, type=str)
+    parser.add_argument('--instances',
+                        default=None,
+                        type=str)
     args = parser.parse_args()
-    instances = args.instances.split('-')
-    instances = bestKnown.keys()
+    if args.instances == "all":
+        instances = bestKnown.keys()
+    else:
+        instances = args.instances.split('-')
     results = []
     criterias = ["spt", "lrpt", "est_spt", "est_lrpt", "lpt"]
+
+    global_results = dict()
+    for inst in instances:
+        global_results[inst] = dict()
+        for criteria in criterias:
+            global_results[inst][criteria] = list()
 
     print("# metaheuristic_jobshop")
     print("<pre>")
@@ -87,6 +104,7 @@ if __name__ == '__main__':
         print('Basic Result : \n')
 
         for inst in instances:
+            global_results[inst]["basic"] = list()
             try:
                 instance = Instance.fromFile('tests/instances/' + inst)
             except(FileNotFoundError, IOError):
@@ -94,11 +112,14 @@ if __name__ == '__main__':
             start = time.time()
             result, sol_basic = BasicSolver().solve(instance=instance, deadline=None)
             response = format_result(sol_basic.toSchedule(), inst, start)
-
+            global_results[inst]["basic"].append(response[3])
             results.append([inst, response[0], response[1], response[2], response[3], response[4]])
         print(tabulate(results, headers=['instance', 'size', 'best', 'runtime', 'makespan', 'ecart']))
 
         print("</pre>")
+    dest_file = "results.json"
+    with open(dest_file, "w") as a_file:
+        json.dump(global_results, a_file)
 
 
 
