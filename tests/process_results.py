@@ -1,5 +1,7 @@
 import json
 import time
+from collections import OrderedDict
+from operator import itemgetter
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -17,16 +19,16 @@ def plot_data(xdata, ydata, title, xlabel, ylabel, fig_num):
 
 
 def plot_result(makespans, best_known_value, instance):
-    fig, ax = plt.subplots(figsize=(10,10))
+    fig, ax = plt.subplots(figsize=(8,10))
     N = len(makespans.keys())
     best_known_list = [best_known_value]*N
-
+    makespans = OrderedDict(sorted(makespans.items(), key=itemgetter(1)))
     all_makespans = [value[0] for value in makespans.values()]
     ecart = [round(100 * (val - best_known_value) / best_known_value, 1) for val in all_makespans]
     ind = np.arange(N)  # the x locations for the groups
     width = 0.35  # the width of the bars: can also be len(x) sequence
     p1 = ax.bar(ind, best_known_list, width, label='best known makespan')
-    p2 = ax.bar(ind, all_makespans, width, color='darkred',
+    p2 = ax.bar(ind, np.array(all_makespans)-np.array(best_known_list), width, color='darkred',
                 bottom=best_known_list, label='Actual makespan')
 
     ax.bar_label(p2, labels=[f"{e}%" for e in ecart],
