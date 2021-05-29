@@ -8,7 +8,7 @@ from solvers.greedy_solver import GreedySolver
 from Instance import Instance
 from ResourceOrder import ResourceOrder
 from JobNumbers import JobNumbers
-from process_results import read_json_file, save_result_figs
+from process_results import read_json_file, save_result_figs, save_to_json_file
 
 bestKnown = { "aaa1": 11,
               "ft06": 55,
@@ -71,11 +71,6 @@ def solve_problem(instances, criteria="spt"):
         global_results[inst][criteria].append(response[3])
         results.append([inst, response[0], response[1], response[2], response[3], response[4]])
     print(tabulate(results, headers=['instance', 'size', 'best', 'runtime', 'makespan', 'ecart']))
-
-
-def save_to_json_file(data, dest_file):
-    with open(dest_file, "w") as a_file:
-        json.dump(data, a_file)
 
 
 if __name__ == '__main__':
