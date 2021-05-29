@@ -18,8 +18,8 @@ def plot_data(xdata, ydata, title, xlabel, ylabel, fig_num):
     plt.hist(ydata)
 
 
-def plot_result(makespans, best_known_value, instance):
-    fig, ax = plt.subplots(figsize=(8,10))
+def save_result_figs(makespans, best_known_value, instance, show= False):
+    fig, ax = plt.subplots(figsize=(8, 10))
     N = len(makespans.keys())
     best_known_list = [best_known_value]*N
     makespans = OrderedDict(sorted(makespans.items(), key=itemgetter(1)))
@@ -29,7 +29,7 @@ def plot_result(makespans, best_known_value, instance):
     width = 0.35  # the width of the bars: can also be len(x) sequence
     p1 = ax.bar(ind, best_known_list, width, label='best known makespan')
     p2 = ax.bar(ind, np.array(all_makespans)-np.array(best_known_list), width, color='darkred',
-                bottom=best_known_list, label='Actual makespan')
+                bottom=best_known_list, label='Actual makespan difference')
 
     ax.bar_label(p2, labels=[f"{e}%" for e in ecart],
                  padding=8, color='b', fontsize=18)
@@ -45,7 +45,8 @@ def plot_result(makespans, best_known_value, instance):
     ax.bar_label(p1, label_type='center')
     ax.bar_label(p2, label_type='center')
     plt.savefig(instance+"_results.png")
-    plt.show()
+    if show:
+        plt.show()
 
 
 def read_json_file(file_path):
@@ -68,6 +69,6 @@ if __name__ == '__main__':
                  "la01": 666,
                  "la02": 655,
                  }
-    global_results = read_json_file("results.json")
+    global_results = read_json_file("tests/results.json")
     for inst, makespans in global_results.items():
-        plot_result(makespans, bestKnown[inst], inst)
+        save_result_figs(makespans, bestKnown[inst], inst)

@@ -8,6 +8,7 @@ from solvers.greedy_solver import GreedySolver
 from Instance import Instance
 from ResourceOrder import ResourceOrder
 from JobNumbers import JobNumbers
+from process_results import read_json_file, save_result_figs
 
 bestKnown = { "aaa1": 11,
               "ft06": 55,
@@ -60,7 +61,10 @@ def solve_problem(instances, criteria="spt"):
         logging.debug(f"task_by_machines: {task_by_machines}")
         resource_order = ResourceOrder(instance=instance,
                                        task_by_machines=task_by_machines)
-        job_numbers = JobNumbers(instance, job_list)
+
+        new_instance = Instance(numJobs=instance.numJobs, numTasks=instance.numTasks,
+                                durations=instance.durations, machines=instance.machines)
+        job_numbers = JobNumbers(new_instance, job_list)
         logging.debug("resource_order: %s", str(resource_order))
         schedule_repr = job_numbers.toSchedule()
         response = format_result(schedule_repr, instance_name=inst, start_time=start)
@@ -73,6 +77,7 @@ def save_to_json_file(data, dest_file):
     with open(dest_file, "w") as a_file:
         json.dump(data, a_file)
 
+
 if __name__ == '__main__':
 
     logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
@@ -80,6 +85,15 @@ if __name__ == '__main__':
     parser.add_argument('--instances',
                         default=None,
                         type=str)
+    parser.add_argument('--save_result',
+                        action="store_true")
+
+    parser.add_argument('--create_figs',
+                        action="store_true")
+    parser.add_argument('--show_figs',
+                        action="store_true")
+
+    dest_file = "tests/results_"+str(time.strftime("%Y_%m_%d_%Hh_%M"))+".json"
     args = parser.parse_args()
     if args.instances == "all":
         instances = bestKnown.keys()
@@ -117,11 +131,15 @@ if __name__ == '__main__':
         print(tabulate(results, headers=['instance', 'size', 'best', 'runtime', 'makespan', 'ecart']))
 
         print("</pre>")
-    dest_file = "results.json"
-    with open(dest_file, "w") as a_file:
-        json.dump(global_results, a_file)
+    if args.save_result:
 
+        with open(dest_file, "w") as a_file:
+            json.dump(global_results, a_file)
 
+    if args.create_figs:
+        global_results = read_json_file(dest_file)
+        for inst, makespans in global_results.items():
+            save_result_figs(makespans, bestKnown[inst], inst, show=args.show_figs)
 
 
 

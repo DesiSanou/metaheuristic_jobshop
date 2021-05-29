@@ -23,10 +23,8 @@ class JobNumbers(Encoding):
         for job in self.jobs:
             task = nextTask[job]
             machine = int(self.instance.machine(job, task))
-
             est = 0 if task == 0 else startTimes[job][task-1] + self.instance.duration(job, task-1)
             est = max(est, nextFreeTimeResource[machine])
-
             startTimes[job][task] = est
             nextFreeTimeResource[machine] = est + self.instance.duration(job, task)
             nextTask[job] = task + 1

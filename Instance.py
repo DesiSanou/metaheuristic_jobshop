@@ -4,13 +4,13 @@ from Task import Task
 
 
 class Instance:
-    def __init__(self, numJobs=0, numTasks=0):
+    def __init__(self, numJobs=0, numTasks=0, durations=None, machines=None):
         super(Instance, self).__init__()
         self.numJobs = numJobs
         self.numTasks = numTasks
         self.numMachines = numTasks
-        self.durations = np.zeros((numJobs, numTasks))
-        self.machines = np.zeros((numJobs, numTasks), dtype=int)
+        self.durations = np.zeros((numJobs, numTasks)) if durations is None else durations
+        self.machines = np.zeros((numJobs, numTasks), dtype=int) if machines is None else machines
 
     def machine(self, *kwargs):
         if isinstance(kwargs[0], Task):
