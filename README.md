@@ -1,115 +1,32 @@
 # metaheuristic_jobshop
+
+To run code, use main.py file 
 <pre>
 
+several options can be used:
+--instances : list the instances name to test, separated by -; 
+              used all to test all the instances (aaa1, ft06, ft20, ft10, la01, la02)
+--save_result: to save the results in a json file. 
+                This file can be processed in the file named process_results.py
+--create_figs : to save figures after running the code
+--show: whether you want to plot the result figures or not (default: False)
 
-Solver: Greedy | Criteria: SPT 
+python main.py --instances aaa1-ft20 
 
-instance    size      best    runtime    makespan    ecart
-----------  ------  ------  ---------  ----------  -------
-<<<<<<< HEAD
-la01        10x5       666          0        1292     94
-la02        10x5       655          0        2003    205.8
-=======
->>>>>>> solvers
-aaa1        2x3         11          0          16     45.5
-ft06        6x6         55          0         118    114.5
-ft10        10x10      930          0        2698    190.1
-ft20        20x5      1165          0        2814    141.5
-<<<<<<< HEAD
-=======
-la01        10x5       666          0        1292     94
-la02        10x5       655          0        2003    205.8
->>>>>>> solvers
-
-
-Solver: Greedy | Criteria: LRPT 
-
-instance    size      best    runtime    makespan    ecart
-----------  ------  ------  ---------  ----------  -------
-<<<<<<< HEAD
-la01        10x5       666          0        1217     82.7
-la02        10x5       655          0        1008     53.9
-=======
->>>>>>> solvers
-aaa1        2x3         11          0          13     18.2
-ft06        6x6         55          0          91     65.5
-ft10        10x10      930          0        2270    144.1
-ft20        20x5      1165          0        2627    125.5
-<<<<<<< HEAD
-=======
-la01        10x5       666          0        1217     82.7
-la02        10x5       655          0        1008     53.9
->>>>>>> solvers
-
-
-Solver: Greedy | Criteria: EST_SPT 
-
-instance    size      best    runtime    makespan    ecart
-----------  ------  ------  ---------  ----------  -------
-<<<<<<< HEAD
-la01        10x5       666          0        1118     67.9
-la02        10x5       655          0        1135     73.3
-=======
->>>>>>> solvers
-aaa1        2x3         11          0          13     18.2
-ft06        6x6         55          0         117    112.7
-ft10        10x10      930          0        1507     62
-ft20        20x5      1165          0        1798     54.3
-<<<<<<< HEAD
-=======
-la01        10x5       666          0        1118     67.9
-la02        10x5       655          0        1135     73.3
->>>>>>> solvers
-
-
-Solver: Greedy | Criteria: EST_LRPT 
-
-instance    size      best    runtime    makespan    ecart
-----------  ------  ------  ---------  ----------  -------
-<<<<<<< HEAD
-la01        10x5       666          0        1066     60.1
-la02        10x5       655          0        1107     69
-=======
->>>>>>> solvers
-aaa1        2x3         11          0          13     18.2
-ft06        6x6         55          0          86     56.4
-ft10        10x10      930          0        1761     89.4
-ft20        20x5      1165          0        2098     80.1
-<<<<<<< HEAD
-=======
-la01        10x5       666          0        1066     60.1
-la02        10x5       655          0        1107     69
-
-
-Solver: Greedy | Criteria: LPT 
-
-instance    size      best    runtime    makespan    ecart
-----------  ------  ------  ---------  ----------  -------
-aaa1        2x3         11          0          14     27.3
-ft06        6x6         55          0         127    130.9
-ft10        10x10      930          0        3034    226.2
-ft20        20x5      1165          0        2795    139.9
-la01        10x5       666          0        1995    199.5
-la02        10x5       655          0        2044    212.1
->>>>>>> solvers
-
+These  are results obtained by using the basic solver. It can be a reference to check that  
+if other heuristics improve the makespan.
 
 Basic Result : 
 
 instance    size      best    runtime    makespan    ecart
 ----------  ------  ------  ---------  ----------  -------
-<<<<<<< HEAD
-la01        10x5       666          0         776     16.5
-la02        10x5       655          0         736     12.4
-=======
->>>>>>> solvers
+
 aaa1        2x3         11          0          12      9.1
 ft06        6x6         55          0          75     36.4
 ft10        10x10      930          0        1588     70.8
 ft20        20x5      1165          0        2454    110.6
-<<<<<<< HEAD
-=======
 la01        10x5       666          0         776     16.5
 la02        10x5       655          0         736     12.4
->>>>>>> solvers
+
+
 </pre>
