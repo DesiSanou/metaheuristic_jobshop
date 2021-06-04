@@ -1,6 +1,7 @@
 import numpy as np
-
+import time
 from Instance import Instance
+import Schedule as sc
 
 
 class GreedySolver(object):
@@ -244,3 +245,34 @@ class GreedySolver(object):
                 schedulable_tasks.append((job, task + 1))
             schedulable_task_exists = len(schedulable_tasks) != 0
         return job_list, resource
+
+    def solve_gredy(self, gredy_method_list):
+        results = []
+        instance = Instance()
+        instance.durations = self.durations
+        instance.machines = self.machines
+        instance.numJobs = self.number_of_jobs
+        instance.numTasks = self.number_of_tasks
+        for gredy_method in gredy_method_list:
+            start = time.time()
+            if gredy_method == 'spt':
+                job_list, resource = self.run_spt()
+            if gredy_method == 'lpt':
+                job_list, resource = self.run_lpt()
+            if gredy_method == 'lrpt':
+                job_list, resource = self.run_lrpt()
+            if gredy_method == 'est_spt':
+                job_list, resource = self.run_est_spt()
+            if gredy_method == 'est_lrpt':
+                job_list, resource = self.run_est_lrpt()
+
+            detail = sc.detailed_representation(resource, instance)
+            makespan = sc.evaluate_detailed_represenation(detail, instance)
+
+            end = time.time()
+
+            results.append([end - start, makespan])
+
+        return results
+
+        #ut.add_gap(results, exact_makespan=False)
