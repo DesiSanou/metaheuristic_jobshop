@@ -2,11 +2,7 @@ import argparse
 import logging
 import json
 import time
-from collections import OrderedDict
-from operator import itemgetter
 
-import matplotlib.pyplot as plt
-import numpy as np
 
 
 from Instance import Instance

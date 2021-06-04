@@ -1,7 +1,5 @@
-import numpy as np
-import pandas as pd
+
 import math
-import hashlib
 
 infini = math.inf
 
@@ -19,8 +17,6 @@ def detailed_representation(ressource, instance):
 
     # initialize detailled representation
     detailed_resource = [[infini]*number_of_tasks for _ in range(number_of_jobs)]
-
-    detailed_resource_exists = True
 
     while (max([sum(detailed_resource[i]) for i in range(number_of_jobs)]) >= infini):
 
@@ -84,7 +80,6 @@ def critical_path(instance, start_time, makespan, ressource):
     number_of_jobs = instance.numJobs
     number_of_tasks = instance.numTasks
 
-    critical_tasks = []
     end_list = []
     durations = durations.tolist()
 
@@ -153,12 +148,6 @@ def get_tuples(path):
     return blocks
 
 def get_ressource(machines, job, operation):
-    """
-     :param machines: tableau comportant la liste des machines
-     :param job: job associé à une tâches
-     :param operation: numéro d'opération associé à une tâche
-     :return: ressource associée à la tache passée en paramètre à l'aide de "job" et "opération"
-     """
     return machines[job, operation]
 
 def duplicate_ressource(resource):
@@ -172,14 +161,7 @@ def duplicate_ressource(resource):
     return new_resource
 
 def choose_best_neighbor(all_neighbors,number_of_jobs, number_of_tasks,  durations, machines):
-    """
-    :param all_neighbors: liste de tous les voisins
-    :param n:
-    :param m:
-    :param durations:
-    :param machines:
-    :return: meilleur voisin : makespan, solution, détaille des horaires de la solution
-    """
+
     best_neighbor = math.inf
     for solution in all_neighbors:
         new_detail = detailed_representation(solution, number_of_jobs, number_of_tasks,  durations, machines)
@@ -224,16 +206,14 @@ def path_critic(detail, instance, ressource):
     durations = instance.durations
     number_of_jobs = instance.numJobs
     number_of_tasks = instance.numTasks
-    # Calculer le chemin critique et retourner la liste de tâches qui le compose
     makespan = evaluate_detailed_represenation(detail, instance)
 
-    critiques = []  # contient des taches (j,o)
-    times = []  # contient les endtimes le long du chemin critique
+    critiques = []
+    times = []
 
     longest_time = makespan
     times.append(makespan)
 
-    # initialisation, on commence par la fin
     for i in range(number_of_jobs):
         if detail[i][number_of_tasks - 1] + durations[i, number_of_tasks - 1] == longest_time:
             # tache i, m-1 est sur chemin_critique
@@ -245,15 +225,12 @@ def path_critic(detail, instance, ressource):
 
     while longest_time != 0:
 
-        # print(critiques) #debug
         last = critiques[0]
 
         j, o = last
         mac = machines[j, o]
 
-        # pred_job = [] #tache precedente du job et precedente de la machine
 
-        # tache precedente du job
         if detail[j][o - 1] + durations[j, o - 1] == detail[j][o]:
             tache = (j, o - 1)  # debug
             critiques.insert(0, tache)
@@ -285,9 +262,8 @@ def validate_detail(detail, instance):
     number_of_jobs = instance.numJobs
     number_of_tasks = instance.numTasks
 
-    val = True  # initialisation à valider = True, si une contrainte est violée, on passe à False et on arrete
+    val = True
 
-    # precedence
     for i in range(number_of_jobs):
         for j in range(number_of_tasks - 1):
             if detail[i][j + 1] < detail[i][j] + durations[i, j]:
@@ -295,11 +271,9 @@ def validate_detail(detail, instance):
                 val = False
                 break
 
-    # index ne peut traiter qu'une tache à la fois
-    # on verifie qu'un index ne fait qu'une tache à la fois
+
 
     for k in range(number_of_tasks):
-        # retrouver toutes les taches de la index et stocker les startdates
         list_start = []
         list_start_durations = []
         for i in range(number_of_jobs):
@@ -312,12 +286,10 @@ def validate_detail(detail, instance):
             end = s + durations[i, j]
             list_start_durations.append((start, end))
 
-        # verifier que startdate+duration<nextstartdate
         for i in range(len(list_start_durations) - 1):
             s = list_start_durations[i + 1]  # date de début de la prochaine tache
             e = list_start_durations[i]
             if s < e:
-                print("not correct, plus d'une tache à la fois pour index ", k, 'start: ', s)
                 val = False
                 break
 
