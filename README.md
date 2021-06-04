@@ -10,7 +10,6 @@ To execute this project you need to create conda environment with python 3.7 and
 
 And then,
 
-`python main.py --exact True --instance ft06 ft20 --descent True`
 
 
 
